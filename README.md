@@ -79,3 +79,6 @@ writing to the buffer, thus a mechanism needs to be established to determine whe
 > The second piece is a set of new URLs to further crawl. The crawler adds this set of new URLs to a URLs pool known as the URLs frontier . Since visiting web pages has costs, we do not want the crawler to visit the same page twice. Hence the crawler needs a mechanism to remember URLs that have been visited already. As the crawler visits the URLs in the URLs frontier, the process of finding the target PNG URLs and new URLs to further explore repeats until it finds no more new PNG URL.
 
 ------------------------------------------------------------------
+
+## Single-threaded web crawler
+Inspiration: To solve the previous problem, a multi-threaded concurrent web-crawler was created using I/O with cURL in each thread. Now, the plan is to used non-blocking I/O known as asynchronous I/O. The cURL multi interface enables multiple simultaneous transfers in the same thread.
