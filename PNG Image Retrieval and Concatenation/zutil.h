@@ -2,9 +2,6 @@
  * @brief: header file of in memory deflation and inflation using zlib. 
  * Based on the zlib example zpipe.c at https://www.zlib.net/zlib_how.html
  *
- * Modification is
- * Copyright 2018-2019 Yiqing Huang
- *
  * This software may be freely redistributed under the terms of MIT License
  *            https://www.zlib.net/zlib_how.html
  */
