@@ -19,7 +19,7 @@
 #define IMG_URL "http://ece252-%d.uwaterloo.ca:2530/image?img=%d&part=%d"
 #define ECE252_HEADER "X-Ece252-Fragment: "
 #define BUF_SIZE 10240  /* 1024*10 = 10K */
-#define SEM_PROC 1	//used by aarti- CAN'T WE JUST USE 0
+#define SEM_PROC 1
 #define FORKED_PROD 1
 #define FORKED_CON 1
 
@@ -147,7 +147,6 @@ srand(time(NULL));
 
     if (curl_handle == NULL) {
         fprintf(stderr, "curl_easy_init: returned NULL\n");
-        // return 1;
         return;
     }
 
@@ -251,7 +250,6 @@ int main(int argc, char **argv){
     double times[2];
    struct timeval tv;
    int check = 0;
-    //int start_flag; //starting the timing parameter to print output
 
     char *err_str = "incorrect argument recieved- try again!"; //for printing error
 	char *img_err_str = "incorrect value for arg N recieved";
@@ -284,14 +282,12 @@ int main(int argc, char **argv){
     U8 *IDATInflatedConcat;
     int concat_size = sizeof(U8)*9606*50;
     int factor2 = PROD_MUTEX + ITEMS;
-    // RECV_BUF *boundBuf[buffer_size];   //ptrs of bb[0], bb[1]...
     RECV_BUF **boundBuf;
     if((numprod+factor2) > (ITEMS+SPACES))
     check = 1;
 
 
     boundBuf = malloc(sizeof(RECV_BUF*)*buffer_size);
-    //int completed = CON_MUTEX;
     int not_finished = PROD_MUTEX;
     int boundBuf_size = sizeof_shm_recv_buf(BUF_SIZE, buffer_size);
     int index_size = sizeof_shm_recv_buf(BUF_SIZE, 1);
@@ -536,8 +532,6 @@ int main(int argc, char **argv){
             shmdt(IDATInflatedConcat);
 
             //consumer has completed concatenating images and placed in IDAT data
-
-
             break;
         }
         else {
@@ -560,19 +554,11 @@ int main(int argc, char **argv){
         for (int i = 0; i < num_prod; i++ ) {
 
             waitpid(prodPid[i], &prodChildStatus[i], 0);
-
-            // if (WIFEXITED(prodChildStatus[i])) {
-            //         printf("Child prodpid[%d]=%d terminated with ChildStatus: %d.\n", i, prodPid[i], prodChildStatus[i]);
-            // }
         }
 
         for (int i = 0; i < num_con; i++ ) {
 
             waitpid(consPid[i], &conChildStatus[i], 0);
-
-            // if (WIFEXITED(conChildStatus[i])) {
-            //         printf("Child conspid[%d]=%d terminated with ChildStatus: %d.\n", i, consPid[i], conChildStatus[i]);
-            // }
         }
 
 
@@ -761,8 +747,6 @@ int main(int argc, char **argv){
     shmdt(seqStack);
     shmdt(sems);
     shmdt(IDATInflatedConcat);
-
-    //delete (?) shared memory
     shmctl(shmid_ptr, IPC_RMID, NULL);
     shmctl(shmid_cons, IPC_RMID, NULL);
     shmctl(shmid_prod, IPC_RMID, NULL);
