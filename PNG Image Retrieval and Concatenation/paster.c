@@ -63,16 +63,12 @@ typedef struct recv_buf2 {
 typedef unsigned char U8;
 typedef unsigned int U32;
 
-//U8 final_strip_data[50][BUF_SIZE];
-
 //global variables always init to 0 as per c std
 int fragment_recved[50] = {0}; //slot is 0 if not recieved and 1 if recieved
 
 int allImagesGotten=0;
 
 extern char *optarg;
-
-////////////////////////////////////////////////////////////////////////////////
 
 //Prototypes
 void *do_work(void *arg); //routine that can run as a thread by threads
@@ -196,7 +192,6 @@ int recv_buf_init(RECV_BUF *ptr, size_t max_size)
     return 0;
 }
 
-//things we need : url and num_threads to distribute work
 void *do_work(void *arg){
 
 struct thread_args *p_in = arg;
@@ -223,8 +218,6 @@ if (curl_handle == NULL) {
 /* specify URL to get */
 
 //thread_num contains the thread num
-//eg: if total num_threads = 7, thread nums will be from 0 to 6
-
 //divding work between each machine
 if( (((p_in->thread_num)%3)+1) == 1)
 {
@@ -262,11 +255,6 @@ res = curl_easy_perform(curl_handle);
 if( res != CURLE_OK) {
         fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
     }
-
-//From this point we have the data buffer size in recv_buf.buf, 
-//data in the buffer in recv_buf.buf
-//the sequence number in recv_buf.seq
-
 
 //variables for keeping track of loop and sequence strips recieved
 fragment_recved[recv_buf.seq] = 1; //changing buffer value
@@ -360,23 +348,8 @@ url_2[44] = n + '0';
 url_3[44] = n + '0';
 
 //urls for different machines are now ready
-
-/////////////////////////////////////////////////////////////////////////////////  
-
 //creating n threads
 int num_threads = t;
-
-//work that each pthread has to do is get a strip from the server and put it in a buffer
-//and return to the origin an then check the seq num and I put it in the right index of the buffer
-
-//input parameters
-
-
-
-
-//starting main.c from pthreads
-
-//pthread_t *p_tids = malloc(sizeof(pthread_t) * num_threads);
 struct thread_args in_params[num_threads]; //don't know what input parameters to send
 struct thread_ret *p_results[num_threads]; //don't know what results to get
 
@@ -457,9 +430,6 @@ for (int i = 0; i < 50; i++) {
         printf("Error with inflation for %d strip\n", i);
         return -1;
     }
-    // if(IDATInflatedLength != 9606) {
-    //     printf("Error in size of inflation for strip %d\n", i);
-    // }
     inflatedLengthTotal += IDATInflatedLength;
     int temp = flag;
     for (int j = temp; j < inflatedLengthTotal; j++) {
@@ -476,7 +446,6 @@ if (success < 0) {
     return -1;
 }
 
-//part 3: write into all.png - gotten from catpng.c
         FILE *finalPNGFile = fopen("all.png", "wb+");
 
         char header[] = {0x89, 0x50, 0x4E,0x47, 0x0D, 0x0A,0x1A,0x0A};
